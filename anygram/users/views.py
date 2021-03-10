@@ -23,13 +23,11 @@ class LoginView(CreateView):
 
 class PasswordChangeView(CreateView):
     form_class = PasswordChangeForm
-    # success_url = reverse_lazy('index')
-    success_url = redirect('done_view', message='Пароль успешно изменен')
+    success_url = reverse_lazy('password_change_done')
     template_name = 'password_change.html'
 
 
 class PasswordResetView(CreateView):
     form_class = PasswordResetForm
-    success_url = reverse_lazy('index')
-    success_url = redirect('done_view', message='Пароль успешно сброшен')
+    success_url = reverse_lazy('password_reset_done')
     template_name = 'password_reset.html'
