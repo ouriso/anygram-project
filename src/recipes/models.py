@@ -1,0 +1,54 @@
+from django.contrib.auth import get_user_model
+from django.db import models
+from django.urls import reverse
+
+User = get_user_model()
+
+
+class Tag(models.Model):
+    name = models.CharField('Название тега', max_length=30)
+    slug = models.SlugField(unique=True)
+
+    def __str__(self) -> str:
+        return self.name
+
+
+class Ingredient(models.Model):
+    name = models.CharField('Название ингредиента', max_length=50)
+    slug = models.SlugField(unique=True)
+    dimension = models.CharField(max_length=15, default='шт.')
+
+    def __str__(self) -> str:
+        return self.name
+
+
+class Recipe(models.Model):
+    # class Tags(models.TextChoices):
+    #     INTERIOR = '#интерьер'
+    #     PORTRAIT = '#портрет'
+    #     LANDSCAPE = '#пейзаж'
+
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='recipes')
+    title = models.CharField('Название рецепта', max_length=100)
+    slug = models.SlugField(unique=True)
+    description = models.TextField('Описание рецепта')
+    duration = models.PositiveSmallIntegerField('Время приготовления, мин')
+    pub_date = models.DateTimeField('Дата публикации', auto_now_add=True, db_index=True)
+    image = models.ImageField(upload_to='recipes/', blank=True, null=True)
+    ingredients = models.ManyToManyField(Ingredient, through='RecipeIngredient', blank=True)
+    tags = models.ManyToManyField(Tag, related_name='recipes', blank=True)
+
+    def get_absolute_url(self):
+        return reverse('recipe', args=[str(self.slug)])
+
+    def __str__(self) -> str:
+        return self.title
+
+    class Meta:
+        ordering = ('-pub_date',)
+
+
+class RecipeIngredient(models.Model):
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
+    ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
+    amount = models.PositiveSmallIntegerField()

@@ -1,0 +1,25 @@
+<div class="card" data-id="{{ recipe.pk }}">
+        {% load thumbnail %}
+        {% thumbnail recipe.image "300x300" crop="center" upscale=True as im %}
+        <img src="{{ im.url }}" alt="Фото рецепта" class="card__image">
+        {% endthumbnail %}
+
+    <div class="card__body">
+        <a class="card__title link" href="{% url 'recipe' recipe.slug %}" target="_blank">{{ recipe.title }}</a>
+        <ul class="card__items">
+            {% for tag in recipe.tags.all %}
+                <li class="card__item"><span class="badge badge_style_green">{{ tag.name }}</span></li>
+            {% endfor %}
+        </ul>
+        <div class="card__items card__items_column">
+            <p class="card__text"><span class="icon-time"></span>{{ recipe.duration }} мин.</p>
+            <p class="card__text"><span class="icon-user"></span><a href="{% url 'index_author' recipe.author.username %}" style="color: black">{{ recipe.author }}</a></p>
+        </div>
+    </div>
+    <div class="card__footer">
+        <button class="button button_style_light-blue" name="purchases" data-out><span class="icon-plus button__icon"></span>Добавить в покупки</button>
+        {% if user.is_authenticated %}
+        <button class="button button_style_none" name="favorites" data-out><span class="icon-favorite"></span></button>
+        {% endif %}
+    </div>
+</div>
