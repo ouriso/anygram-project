@@ -10,6 +10,7 @@ class CartSerializer(serializers.ModelSerializer):
 
 
 class IngredientSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Ingredient
-        fields = ('pk', 'name', 'dimension')
+        fields = ('pk', 'title', 'dimension')

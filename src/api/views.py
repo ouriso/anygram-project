@@ -56,4 +56,4 @@ class IngredientsView(ListAPIView):
     serializer_class = IngredientSerializer
     permission_classes = [permissions.IsAuthenticated]
     filter_backends = [SearchFilter]
-    search_fields = ['name', 'slug']
+    search_fields = ['title', 'slug']

@@ -4,15 +4,15 @@ from .models import *
 
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
-    list_display = ('pk', 'name', 'slug')
-    prepopulated_fields = {'slug': ('name',)}
+    list_display = ('pk', 'title', 'slug')
+    prepopulated_fields = {'slug': ('title',)}
     empty_value_display = '-пусто-'
 
 
 @admin.register(Ingredient)
 class IngredientAdmin(admin.ModelAdmin):
-    list_display = ('pk', 'name', 'slug', 'dimension')
-    prepopulated_fields = {'slug': ('name',)}
+    list_display = ('pk', 'title', 'slug', 'dimension')
+    prepopulated_fields = {'slug': ('title',)}
     empty_value_display = '-пусто-'
 
 

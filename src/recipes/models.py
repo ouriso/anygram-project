@@ -2,24 +2,36 @@ from django.contrib.auth import get_user_model
 from django.db import models
 from django.urls import reverse
 
+from pytils.translit import slugify
+
 User = get_user_model()
 
 
 class Tag(models.Model):
-    name = models.CharField('Название тега', max_length=30)
+    title = models.CharField('Название тега', max_length=30)
     slug = models.SlugField(unique=True)
 
-    def __str__(self) -> str:
-        return self.name
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.title)
+        return super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.title
 
 
 class Ingredient(models.Model):
-    name = models.CharField('Название ингредиента', max_length=50)
+    title = models.CharField('Название ингредиента', max_length=50)
     slug = models.SlugField(unique=True)
     dimension = models.CharField(max_length=15, default='шт.')
 
-    def __str__(self) -> str:
-        return self.name
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.title)
+        return super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.title
 
 
 class Recipe(models.Model):
@@ -40,6 +52,11 @@ class Recipe(models.Model):
 
     def get_absolute_url(self):
         return reverse('recipe', args=[str(self.slug)])
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.title)
+        return super().save(*args, **kwargs)
 
     def __str__(self) -> str:
         return self.title
