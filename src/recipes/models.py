@@ -35,11 +35,6 @@ class Ingredient(models.Model):
 
 
 class Recipe(models.Model):
-    # class Tags(models.TextChoices):
-    #     INTERIOR = '#интерьер'
-    #     PORTRAIT = '#портрет'
-    #     LANDSCAPE = '#пейзаж'
-
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='recipes')
     title = models.CharField('Название рецепта', max_length=100)
     slug = models.SlugField(unique=True)

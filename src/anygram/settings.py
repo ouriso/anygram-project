@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django_filters',
     'users',
     'recipes',
+    'follow',
     'cart',
     'api',
 ]
@@ -111,6 +112,13 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication'
+    ]
+}
 
 
 # Internationalization

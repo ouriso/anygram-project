@@ -3,7 +3,7 @@
 {% block title %}Добро пожаловать на Anygram{% endblock %}
 {% block css %}<link rel="stylesheet" href="{% static 'recipes/pages/index.css' %}">{% endblock %}
 {% block content %}
-    {% include 'tags_table.html' with title="Все рецепты" %}
+    {% include 'tags_table.html' with title=title %}
     <div class="card-list">
         {% for recipe in object_list %}
             {% include 'recipe_item.html' with recipe=recipe %}

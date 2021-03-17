@@ -5,9 +5,9 @@ from django.http import request, HttpResponseRedirect
 from django.template.defaultfilters import slugify
 from django.urls.base import reverse
 
-from recipes.forms import RecipeCreateForm
+from recipes.forms import RecipeCreateForm #, IngredientFormSet
 from .models import Recipe, RecipeIngredient
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404
 from django.views.generic import CreateView, DetailView, ListView
 
 
@@ -28,6 +28,10 @@ class RecipeAuthorListView(ListView):
         author = get_object_or_404(User, username=self.kwargs.get('username'))
         return author
 
+    def is_following(self):
+        author = self.get_author()
+        return self.request.user.follow.all().filter(pk=author.pk).exists()
+
     def get_queryset(self):
         queryset = Recipe.objects.filter(author=self.get_author())
         return queryset
@@ -36,6 +40,7 @@ class RecipeAuthorListView(ListView):
         author = self.get_author()
         context = super().get_context_data(**kwargs)
         context['title'] = f'Рецепты автора {author.first_name}'
+        context['is_following'] = self.is_following()
         return context
 
 
