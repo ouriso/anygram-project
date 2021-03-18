@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block title %}Добро пожаловать на Anygram{% endblock %}
-{% block css %}<link rel="stylesheet" href="{% static 'recipes/pages/index.css' %}">{% endblock %}
+{% block css %}<link rel="stylesheet" href="{% static 'recipes/pages/myFollow.css' %}">{% endblock %}
 {% block content %}
     {% include 'tags_table.html' with title=title %}
     <div class="card-list">
@@ -10,21 +10,20 @@
         {% endfor %}
     </div>
 
-    {% if page.has_other_pages %}
-        {% include 'paginator.html' with items=page paginator=paginator %}
+    {% if page_obj.has_other_pages %}
+        {% include 'paginator.html' with items=page_obj paginator=paginator %}
     {% endif %}
 
 {% endblock %}
 {% block scripts %}
     <script src="{% static 'recipes/js/components/MainCards.js' %}"></script>
 
-    <script src="{% static 'recipes/js/components/Purchases.js' %}"></script>
-    <script src="{% static 'recipes/js/components/Favorites.js' %}"></script>
+    <script src="{% static 'recipes/js/components/MyFollow.js' %}"></script>
+    <script src="{% static 'recipes/js/components/Subscribe.js' %}"></script>
 
     <script src="{% static 'recipes/js/config/config.js' %}"></script>
-    <script src="{% static 'recipes/js/components/CardList.js' %}"></script>
     <script src="{% static 'recipes/js/components/Header.js' %}"></script>
 
     <script src="{% static 'recipes/js/api/Api.js' %}"></script>
-    <script src="{% static 'recipes/indexAuth.js' %}"></script>
+    <script src="{% static 'recipes/myFollow.js' %}"></script>
 {% endblock %}

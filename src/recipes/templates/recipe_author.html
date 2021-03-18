@@ -6,7 +6,11 @@
     {% include 'tags_table.html' with title=title %}
     <div class="author-subscribe" data-author="{{ object_list.0.author.pk }}">
         {% csrf_token %}
-        <p style="padding: 0 0 2em 0;"><button class="button button_style_light-blue button_size_subscribe {% if is_following %} active{% endif %}" name="subscribe" data-out>Подписаться на автора</button></p>
+        {% if is_following %}
+            <p style="padding: 0 0 2em 0;"><button class="button button_style_light-blue button_size_subscribe active" name="subscribe" data-out>Отписаться от автора</button></p>
+        {% else %}
+            <p style="padding: 0 0 2em 0;"><button class="button button_style_light-blue button_size_subscribe" name="subscribe" data-out>Подписаться на автора</button></p>
+        {% endif %}
     </div>
     <div class="card-list">
         {% for recipe in object_list %}
