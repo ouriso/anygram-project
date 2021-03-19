@@ -5,6 +5,7 @@ const nameIngredient = document.querySelector('#nameIngredient');
 const formDropdownItems = document.querySelector('.form__dropdown-items');
 const cantidadVal = document.querySelector('#cantidadVal');
 const cantidad = document.querySelector('#cantidad')
+const cantidadId = document.querySelector('#cantidadId')
 const addIng = document.querySelector('#addIng');
 
 const api = new Api(apiUrl);
@@ -30,6 +31,7 @@ function Ingredients() {
             nameIngredient.value = e.target.textContent;
             formDropdownItems.style.display = ''
             cantidadVal.textContent = e.target.getAttribute('data-val');
+            cantidadId.textContent = e.target.getAttribute('data-id');
         }
     };
     // Добавление элемента из инпута
@@ -42,9 +44,10 @@ function Ingredients() {
             elem.innerHTML = `<span> ${data.name} ${data.value}${data.units}</span> <span class="form__field-item-delete"></span>
                              <input id="nameIngredient_${cur}" name="recipeingredient_set-${cur-1}-title" type="hidden" value="${data.name}">
                              <input id="valueIngredient_${cur}" name="recipeingredient_set-${cur-1}-amount" type="hidden" value="${data.value}">
-                             <input id="unitsIngredient_${cur}" name="recipeingredient_set-${cur-1}-dimension" type="hidden" value="${data.units}">`;
+                             <input id="unitsIngredient_${cur}" name="recipeingredient_set-${cur-1}-dimension" type="hidden" value="${data.units}">
+                             <input id="idIngredient_${cur}" name="recipeingredient_set-${cur-1}-ingredient" type="hidden" value="${data.id}">`;
             cur++;
-            
+            console.log(data)
             ingredientsContainer.appendChild(elem);
         }
     };
@@ -63,10 +66,12 @@ function Ingredients() {
         const data = {
             name: nameIngredient.value,
             value: cantidad.value,
-            units: cantidadVal.textContent
+            units: cantidadVal.textContent,
+            id: cantidadId.textContent
         };
         clearValue(nameIngredient);
         clearValue(cantidad);
+        clearValue(cantidadId);
         return data;
     };
     // очистка инпута
@@ -85,7 +90,7 @@ const cbEventInput = (elem) => {
     return api.getIngredients(elem.target.value).then( e => {
         if(e.length !== 0 ) {
             const items = e.map( elem => {
-                return `<a class="form__item-list" data-val="${elem.dimension}"">${elem.title}</a>`
+                return `<a class="form__item-list" data-id="${elem.pk}" data-val="${elem.dimension}"">${elem.title}</a>`
             }).join(' ')
             formDropdownItems.style.display = 'flex';
             formDropdownItems.innerHTML = items;

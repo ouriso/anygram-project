@@ -92,8 +92,8 @@ class RecipeCreateView(LoginRequiredMixin, CreateView):
         self.object = form.save(commit=False)
         self.object.author = self.request.user
         self.object.save()
-        for form in ingredient_form.deleted_forms:
-            form.delete()
+        # for form in ingredient_form.deleted_forms:
+        #     form.delete()
         ingredient_form.instance = self.object
         ingredient_form.instance.tags.set(form.cleaned_data.get('tags'))
         ingredient_form.save()
