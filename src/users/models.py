@@ -4,5 +4,5 @@ from django.db import models
 
 class User(AbstractUser):
     follow = models.ManyToManyField(
-        'self', symmetrical=False, related_name='+', blank=True
+        'self', symmetrical=False, related_name='follower', blank=True
     )

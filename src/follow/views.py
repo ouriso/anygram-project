@@ -9,11 +9,16 @@ User = get_user_model()
 
 
 class FollowListView(LoginRequiredMixin, ListView):
-    paginate_by = 9
+    paginate_by = 3
     template_name = 'follow_index.html'
 
     def get_queryset(self):
-        queryset = Recipe.objects.filter(author__in=self.request.user.follow.all())
+        queryset = list(self.request.user.follow.all())
+        for i in queryset:
+            print(i)
+        # queryset = []
+        # for user in follower.follow:
+        #     queryset.append(user)
         return queryset
 
     def get_context_data(self, **kwargs):
