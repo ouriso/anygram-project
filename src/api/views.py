@@ -16,6 +16,10 @@ from .serializers import CartSerializer, IngredientSerializer
 User = get_user_model()
 
 
+SUCCESS = {"success": True}
+UNSUCCESS = {"success": False}
+
+
 class PurchasesViewSet(mixins.CreateModelMixin,
                        mixins.ListModelMixin,
                        mixins.DestroyModelMixin,
@@ -43,66 +47,49 @@ class PurchasesViewSet(mixins.CreateModelMixin,
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-# class FollowViewSet(viewsets.ViewSet):
-#     # Create, List, Destroy methods
-#     permission_classes = [permissions.IsAuthenticated]
-
-#     def get_object(self):
-#         return self.request.user
-
-#     # @action(methods=['post'], detail=False)
-#     def post(self, request):
-#         user = self.get_object()
-#         following_id = int(request.data.get('id', None))
-#         if following_id is None:
-#             return Response(status=status.HTTP_404_NOT_FOUND)
-#         following = get_object_or_404(User, pk=following_id)
-#         user.add(follow=following)
-#         return Response(status.HTTP_201_CREATED)
-
-#     # @action(methods=['destroy'], detail=True)
-#     def destroy(self, request):
-#         user = self.get_object()
-#         following_id = int(self.kwargs.get('pk', None))
-#         # following = get_object_or_404(User, pk=following_id)
-#         user.follow.filter(pk=following_id).delete()
-#         return Response(status=status.HTTP_204_NO_CONTENT)
-
-# follow_post = FollowViewSet.as_view({'post': 'post'})
-# follow_delete = FollowViewSet.as_view({'delete': 'destroy'})
 @api_view(['POST'])
 @permission_classes([permissions.IsAuthenticated])
-def post(request):
+def follow_post(request):
     user = request.user
     following_id = int(request.data.get('id', None))
     if following_id is None:
         return Response(status=status.HTTP_404_NOT_FOUND)
     following = get_object_or_404(User, pk=following_id)
     user.follow.add(following)
-    return Response(status.HTTP_201_CREATED)
+    return Response(status=status.HTTP_201_CREATED, data=SUCCESS)
 
 @api_view(['DELETE'])
 @permission_classes([permissions.IsAuthenticated])
-def destroy(request, id):
+def follow_destroy(request, id):
     user = request.user
-    # following_id = int(self.kwargs.get('pk', None))
-    # following = get_object_or_404(User, pk=following_id)
     try:
         following = User.objects.get(pk=id)
         user.follow.remove(following)
     except ObjectDoesNotExist:
-        return Response(status=status.HTTP_400_BAD_REQUEST)
-    # if user.follow.filter(pk=id).exists():
-    #     user.follow.remove(pk=id)
-    return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(status=status.HTTP_400_BAD_REQUEST, data=UNSUCCESS)
+    return Response(status=status.HTTP_202_ACCEPTED, data=SUCCESS)
     
+@api_view(['POST'])
+@permission_classes([permissions.IsAuthenticated])
+def favorite_post(request):
+    user = request.user
+    recipe_id = int(request.data.get('id', None))
+    if recipe_id is None:
+        return Response(status=status.HTTP_404_NOT_FOUND, data=UNSUCCESS)
+    recipe = get_object_or_404(Recipe, pk=recipe_id)
+    recipe.in_favorite.add(user)
+    return Response(status=status.HTTP_201_CREATED, data=SUCCESS)
 
-
-class FavoritesViewSet(mixins.CreateModelMixin,
-                       mixins.DestroyModelMixin,
-                       viewsets.GenericViewSet):
-    # Create, List, Destroy methods
-    pass
+@api_view(['DELETE'])
+@permission_classes([permissions.IsAuthenticated])
+def favorite_destroy(request, id):
+    user = request.user
+    try:
+        recipe = Recipe.objects.get(pk=id)
+        recipe.in_favorite.remove(user)
+    except ObjectDoesNotExist:
+        return Response(status=status.HTTP_400_BAD_REQUEST, data=UNSUCCESS)
+    return Response(status=status.HTTP_202_ACCEPTED, data=SUCCESS)
 
 
 class IngredientsView(ListAPIView):

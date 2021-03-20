@@ -44,6 +44,7 @@ class Recipe(models.Model):
     image = models.ImageField(upload_to='recipes/', blank=True, null=True)
     ingredients = models.ManyToManyField(Ingredient, through='RecipeIngredient', blank=True)
     tags = models.ManyToManyField(Tag, related_name='recipes', blank=True)
+    in_favorite = models.ManyToManyField(User, related_name='favorites', blank=True)
 
     def get_absolute_url(self):
         return reverse('recipe', args=[str(self.slug)])

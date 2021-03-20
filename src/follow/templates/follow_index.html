@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load recipes_filter %}
 {% block title %}Добро пожаловать на Anygram{% endblock %}
 {% block css %}<link rel="stylesheet" href="{% static 'recipes/pages/myFollow.css' %}">{% endblock %}
 {% block content %}
@@ -7,30 +8,38 @@
         <h1 class="main__title">Мои подписки</h1>
     </div>
     <div class="card-list">
-        {{ object_list.0.first_name }}
-        {% for item in object_list.all %}
-        <div class="card-user" data-author="{{ item.username }}">
+        {% for author in object_list %}
+        {% get_recipes author as recipes %}
+        {% recipes_count author.recipes as count %}
+        <div class="card-user" data-author="{{ author.pk }}">
             <div class="card-user__header">
-                <h2 class="card-user__title">{{ item.first_name }}</h2>
+                <h2 class="card-user__title">{{ author.first_name }}</h2>
             </div>
             <div class="card-user__body">
                 <ul class="card-user__items">
-                    {% for recipe in item.recipes %}
+                    {% for recipe in recipes %}
                     <li class="card-user__item">
                         <div class="recipe">
-                            <img src="./images/testCardImg.png" alt="какой-то-текст" class="recipe__image">
-                            <h3 class="recipe__title">Французские тосты</h3>
-                            <p class="recipe__text"><span class="icon-time"></span> 20 мин.</p>
+                            <img src="{{ recipe.image.url }}" alt="Фото рецепта" class="recipe__image">
+                            <h3 class="recipe__title">{{ recipe.title }}</h3>
+                            <p class="recipe__text"><span class="icon-time"></span> {{ recipe.duration }} мин.</p>
                         </div>
                     </li>
                     {% endfor %}
+                    {% if count > 0 %}
                     <li class="card-user__item">
-                        <a href="#" class="card-user__link link">Еще 7 рецептов...</a>
+                        <a href="{% url 'index_author' author.username %}" class="card-user__link link">Еще {{ count }} рецептов...</a>
                     </li>
+                    {% elif count == 0 %}
+                    <li class="card-user__item">
+                        <a href="{% url 'index_author' author.username %}" class="card-user__link link">Страница автора</a>
+                    </li>
+                    {% endif %}
                 </ul>
             </div>
+            {% csrf_token %}
             <div class="card-user__footer">
-                <button class="button button_style_light-blue button_size_auto" name="subscribe">Отписаться</button>
+                <button class="button button_style_light-blue button_size_auto active" name="subscribe">Отписаться</button>
             </div>
         </div>
         {% endfor %}
@@ -41,14 +50,11 @@
 
 {% endblock %}
 {% block scripts %}
+    <script src="{% static 'recipes/js/config/config.js' %}"></script>
     <script src="{% static 'recipes/js/components/MainCards.js' %}"></script>
-
     <script src="{% static 'recipes/js/components/MyFollow.js' %}"></script>
     <script src="{% static 'recipes/js/components/Subscribe.js' %}"></script>
-
-    <script src="{% static 'recipes/js/config/config.js' %}"></script>
     <script src="{% static 'recipes/js/components/Header.js' %}"></script>
-
     <script src="{% static 'recipes/js/api/Api.js' %}"></script>
     <script src="{% static 'recipes/myFollow.js' %}"></script>
 {% endblock %}

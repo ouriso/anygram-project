@@ -20,6 +20,11 @@ class RecipeListView(ListView):
     paginate_by = 9
     template_name = 'recipe_index.html'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Все рецепты Anygram'
+        return context
+
 
 class RecipeAuthorListView(ListView):
     paginate_by = 9
@@ -29,9 +34,9 @@ class RecipeAuthorListView(ListView):
         author = get_object_or_404(User, username=self.kwargs.get('username'))
         return author
 
-    def is_following(self):
-        author = self.get_author()
-        return self.request.user.follow.all().filter(pk=author.pk).exists()
+    # def is_following(self):
+    #     author = self.get_author()
+    #     return self.request.user.follow.all().filter(pk=author.pk).exists()
 
     def get_queryset(self):
         queryset = Recipe.objects.filter(author=self.get_author())
@@ -41,7 +46,8 @@ class RecipeAuthorListView(ListView):
         author = self.get_author()
         context = super().get_context_data(**kwargs)
         context['title'] = f'Рецепты автора {author.first_name}'
-        context['is_following'] = self.is_following()
+        context['id'] = author.pk
+        # context['is_following'] = self.is_following()
         return context
 
 
@@ -103,3 +109,16 @@ class RecipeCreateView(LoginRequiredMixin, CreateView):
         return self.render_to_response(
             self.get_context_data(form=form,
                                   ingredient_form=ingredient_form))
+
+
+class FavoriteListView(LoginRequiredMixin, ListView):
+    paginate_by = 9
+    template_name = 'recipe_index.html'
+
+    def get_queryset(self):
+        return Recipe.objects.filter(in_favorite=self.request.user)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Избранные рецепты'
+        return context

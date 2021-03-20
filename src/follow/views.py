@@ -14,8 +14,6 @@ class FollowListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         queryset = list(self.request.user.follow.all())
-        for i in queryset:
-            print(i)
         # queryset = []
         # for user in follower.follow:
         #     queryset.append(user)
@@ -23,6 +21,6 @@ class FollowListView(LoginRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        print(context)
+        # print(context)
         context['title'] = 'Ваши подписки'
         return context
