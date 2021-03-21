@@ -7,7 +7,7 @@ from django.template.defaultfilters import slugify
 from django.urls.base import reverse
 
 from recipes.forms import RecipeCreateForm, IngredientFormSet
-from .models import Recipe, RecipeIngredient
+from .models import Recipe, RecipeIngredient, Tag
 from django.shortcuts import get_object_or_404
 from django.views.generic import CreateView, DetailView, ListView
 
@@ -16,13 +16,20 @@ User = get_user_model()
 
 
 class RecipeListView(ListView):
-    queryset = Recipe.objects.all()
-    paginate_by = 9
+    paginate_by = 3
     template_name = 'recipe_index.html'
+
+    def get_queryset(self):
+        queryset = Recipe.objects.all()
+        self.filter_tags = self.request.GET.getlist('tags')
+        if self.filter_tags != []:
+            queryset = queryset.filter(tags__in=self.filter_tags)
+        return queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Все рецепты Anygram'
+        context['tags'] = self.filter_tags
         return context
 
 
@@ -34,12 +41,11 @@ class RecipeAuthorListView(ListView):
         author = get_object_or_404(User, username=self.kwargs.get('username'))
         return author
 
-    # def is_following(self):
-    #     author = self.get_author()
-    #     return self.request.user.follow.all().filter(pk=author.pk).exists()
-
     def get_queryset(self):
         queryset = Recipe.objects.filter(author=self.get_author())
+        self.filter_tags = self.request.GET.getlist('tags')
+        if self.filter_tags != []:
+            queryset = queryset.filter(tags__in=self.filter_tags)
         return queryset
 
     def get_context_data(self, **kwargs):
@@ -47,7 +53,7 @@ class RecipeAuthorListView(ListView):
         context = super().get_context_data(**kwargs)
         context['title'] = f'Рецепты автора {author.first_name}'
         context['id'] = author.pk
-        # context['is_following'] = self.is_following()
+        context['tags'] = self.filter_tags
         return context
 
 
@@ -116,9 +122,14 @@ class FavoriteListView(LoginRequiredMixin, ListView):
     template_name = 'recipe_index.html'
 
     def get_queryset(self):
-        return Recipe.objects.filter(in_favorite=self.request.user)
+        queryset = Recipe.objects.filter(in_favorite=self.request.user)
+        self.filter_tags = self.request.GET.getlist('tags')
+        if self.filter_tags != []:
+            queryset = queryset.filter(tags__in=self.filter_tags)
+        return queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Избранные рецепты'
+        context['tags'] = self.filter_tags
         return context

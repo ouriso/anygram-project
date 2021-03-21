@@ -4,7 +4,7 @@
 {% block title %}{{ title }}{% endblock %}
 {% block css %}<link rel="stylesheet" href="{% static 'recipes/pages/index.css' %}">{% endblock %}
 {% block content %}
-    {% include 'tags_table.html' with title=title %}
+    {% include 'tags_table.html' with title=title tags=tags %}
     <div class="author-subscribe" data-author="{{ id }}">
         {% csrf_token %}
         {% is_following user id as is_follow %}

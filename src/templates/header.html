@@ -3,11 +3,11 @@
         <ul class="nav__items list">
             <li class="nav__item{% if request.path == '/' %} nav__item_active{% endif %}"><a href="{% url 'index' %}" class="nav__link link">Рецепты</a></li>
             {% if user.is_authenticated %}
-            <li class="nav__item{% if request.path == '/recipe/follow' %} nav__item_active{% endif %}"><a href="{% url 'index_follow' %}" class="nav__link link">Мои подписки</a></li>
-            <li class="nav__item{% if request.path == '/recipe/new' %} nav__item_active{% endif %}"><a href="{% url 'recipe_new' %}" class="nav__link link">Создать рецепт</a></li>
-            <li class="nav__item{% if request.path == '/recipe/favorite' %} nav__item_active{% endif %}"><a href="#" class="nav__link link">Избранное</a></li>
+            <li class="nav__item{% if request.path == '/recipe/follow/' %} nav__item_active{% endif %}"><a href="{% url 'index_follow' %}" class="nav__link link">Мои подписки</a></li>
+            <li class="nav__item{% if request.path == '/recipe/new/' %} nav__item_active{% endif %}"><a href="{% url 'recipe_new' %}" class="nav__link link">Создать рецепт</a></li>
+            <li class="nav__item{% if request.path == '/favorites/' %} nav__item_active{% endif %}"><a href="{% url 'favorites' %}" class="nav__link link">Избранное</a></li>
             {% endif %}
-            <li class="nav__item{% if request.path == '/cart' %} nav__item_active{% endif %}"><a href="#" class="nav__link link">Список покупок</a> <span class="badge badge_style_blue nav__badge" id="counter">{{ cart|length }}</span></li>
+            <li class="nav__item{% if request.path == '/cart' %} nav__item_active{% endif %}"><a href="#" class="nav__link link">Список покупок</a> {% if cart|length > 0 %}<span class="badge badge_style_blue nav__badge" id="counter">{{ cart|length }}</span>{% endif %}</li>
 
         </ul>
         <ul class="nav__items list">
