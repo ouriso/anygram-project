@@ -4,12 +4,12 @@
 {% block title %}{{ title }}{% endblock %}
 {% block css %}<link rel="stylesheet" href="{% static 'recipes/pages/index.css' %}">{% endblock %}
 {% block content %}
+    {% csrf_token %}
     {% include 'tags_table.html' with title=title tags=tags %}
     <div class="author-subscribe" data-author="{{ id }}">
-        {% csrf_token %}
         {% is_following user id as is_follow %}
         {% if is_follow %}
-            <p style="padding: 0 0 2em 0;"><button class="button button_style_light-blue button_size_subscribe active" name="subscribe" data-out>Отписаться от автора</button></p>
+            <p style="padding: 0 0 2em 0;"><button class="button button_style_light-blue button_size_subscribe active" name="subscribe">Отписаться от автора</button></p>
         {% else %}
             <p style="padding: 0 0 2em 0;"><button class="button button_style_light-blue button_size_subscribe" name="subscribe" data-out>Подписаться на автора</button></p>
         {% endif %}

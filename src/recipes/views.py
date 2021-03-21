@@ -16,7 +16,7 @@ User = get_user_model()
 
 
 class RecipeListView(ListView):
-    paginate_by = 3
+    paginate_by = 9
     template_name = 'recipe_index.html'
 
     def get_queryset(self):

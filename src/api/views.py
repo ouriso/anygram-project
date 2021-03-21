@@ -7,6 +7,7 @@ from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.filters import SearchFilter
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from recipes.models import Ingredient, Recipe
 from cart.cart import Cart
@@ -18,6 +19,56 @@ User = get_user_model()
 
 SUCCESS = {"success": True}
 UNSUCCESS = {"success": False}
+
+
+class AddMixin:
+    model = None
+
+    def get_instance(self, request):
+        user = request.user
+        id = int(request.data.get('id', None))
+        if id is None:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        instance = get_object_or_404(self.model, pk=id)
+        return instance
+
+
+class FollowView(AddMixin, APIView):
+    model = User
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request):
+        instance = self.get_instance(request)
+        request.user.follow.add(instance)
+        return Response(status=status.HTTP_201_CREATED, data=SUCCESS)
+
+    def delete(self, request, id):
+        user = request.user
+        try:
+            following = User.objects.get(pk=id)
+            user.follow.remove(following)
+        except ObjectDoesNotExist:
+            return Response(status=status.HTTP_400_BAD_REQUEST, data=UNSUCCESS)
+        return Response(status=status.HTTP_202_ACCEPTED, data=SUCCESS)
+
+
+class FavoriteView(AddMixin, APIView):
+    model = Recipe
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request):
+        recipe = self.get_instance(request)
+        recipe.in_favorite.add(request.user)
+        return Response(status=status.HTTP_201_CREATED, data=SUCCESS)
+
+    def delete(self, request, id):
+        user = request.user
+        try:
+            recipe = Recipe.objects.get(pk=id)
+            recipe.in_favorite.remove(user)
+        except ObjectDoesNotExist:
+            return Response(status=status.HTTP_400_BAD_REQUEST, data=UNSUCCESS)
+        return Response(status=status.HTTP_202_ACCEPTED, data=SUCCESS)
 
 
 class PurchasesViewSet(mixins.CreateModelMixin,
@@ -44,52 +95,7 @@ class PurchasesViewSet(mixins.CreateModelMixin,
         cart = Cart(self.request)
         recipe = get_object_or_404(Recipe, pk=kwargs['id'])
         cart.remove(recipe)
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
-
-@api_view(['POST'])
-@permission_classes([permissions.IsAuthenticated])
-def follow_post(request):
-    user = request.user
-    following_id = int(request.data.get('id', None))
-    if following_id is None:
-        return Response(status=status.HTTP_404_NOT_FOUND)
-    following = get_object_or_404(User, pk=following_id)
-    user.follow.add(following)
-    return Response(status=status.HTTP_201_CREATED, data=SUCCESS)
-
-@api_view(['DELETE'])
-@permission_classes([permissions.IsAuthenticated])
-def follow_destroy(request, id):
-    user = request.user
-    try:
-        following = User.objects.get(pk=id)
-        user.follow.remove(following)
-    except ObjectDoesNotExist:
-        return Response(status=status.HTTP_400_BAD_REQUEST, data=UNSUCCESS)
-    return Response(status=status.HTTP_202_ACCEPTED, data=SUCCESS)
-    
-@api_view(['POST'])
-@permission_classes([permissions.IsAuthenticated])
-def favorite_post(request):
-    user = request.user
-    recipe_id = int(request.data.get('id', None))
-    if recipe_id is None:
-        return Response(status=status.HTTP_404_NOT_FOUND, data=UNSUCCESS)
-    recipe = get_object_or_404(Recipe, pk=recipe_id)
-    recipe.in_favorite.add(user)
-    return Response(status=status.HTTP_201_CREATED, data=SUCCESS)
-
-@api_view(['DELETE'])
-@permission_classes([permissions.IsAuthenticated])
-def favorite_destroy(request, id):
-    user = request.user
-    try:
-        recipe = Recipe.objects.get(pk=id)
-        recipe.in_favorite.remove(user)
-    except ObjectDoesNotExist:
-        return Response(status=status.HTTP_400_BAD_REQUEST, data=UNSUCCESS)
-    return Response(status=status.HTTP_202_ACCEPTED, data=SUCCESS)
+        return Response(status=status.HTTP_201_CREATED, data=SUCCESS)
 
 
 class IngredientsView(ListAPIView):
