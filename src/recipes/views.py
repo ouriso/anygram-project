@@ -9,7 +9,7 @@ from django.urls.base import reverse
 from recipes.forms import RecipeCreateForm, IngredientFormSet
 from .models import Recipe, RecipeIngredient, Tag
 from django.shortcuts import get_object_or_404
-from django.views.generic import CreateView, DetailView, ListView
+from django.views.generic import CreateView, DetailView, ListView, UpdateView
 
 
 User = get_user_model()
@@ -73,13 +73,6 @@ class RecipeCreateView(LoginRequiredMixin, CreateView):
     template_name = 'recipe_create.html'
     success_url = ''
 
-    # def form_valid(self, form):
-    #     print(self.request.POST.getlist('entries'))
-    #     self.object = form.save(commit=False)
-    #     form.instance.author = self.request.user
-    #     return super().form_valid(form)
-
-
     def get(self, request, *args, **kwargs):
         self.object = None
         form_class = self.get_form_class()
@@ -104,8 +97,47 @@ class RecipeCreateView(LoginRequiredMixin, CreateView):
         self.object = form.save(commit=False)
         self.object.author = self.request.user
         self.object.save()
-        # for form in ingredient_form.deleted_forms:
-        #     form.delete()
+        ingredient_form.instance = self.object
+        ingredient_form.instance.tags.set(form.cleaned_data.get('tags'))
+        ingredient_form.save()
+        return HttpResponseRedirect(self.get_success_url())
+
+    def form_invalid(self, form, ingredient_form):
+        return self.render_to_response(
+            self.get_context_data(form=form,
+                                  ingredient_form=ingredient_form))
+
+
+class RecipeUpdateView(LoginRequiredMixin, UpdateView):
+    model = Recipe
+    form_class = RecipeCreateForm
+    template_name = 'recipe_update.html'
+    success_url = ''
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form_class = self.get_form_class()
+        form = RecipeCreateForm(instance=self.object)
+        ingredient_form = IngredientFormSet()
+        return self.render_to_response(
+            self.get_context_data(form=form,
+                                  ingredient_form=ingredient_form,
+                                  recipe=self.object))
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
+        ingredient_form = IngredientFormSet(self.request.POST)
+        if (form.is_valid() and ingredient_form.is_valid()):
+            return self.form_valid(form, ingredient_form)
+        else:
+            return self.form_invalid(form, ingredient_form)
+
+    def form_valid(self, form, ingredient_form):
+        self.object = form.save(commit=False)
+        self.object.author = self.request.user
+        self.object.save()
         ingredient_form.instance = self.object
         ingredient_form.instance.tags.set(form.cleaned_data.get('tags'))
         ingredient_form.save()

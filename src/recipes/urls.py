@@ -9,12 +9,14 @@ urlpatterns = [
     path('recipe/new/', RecipeCreateView.as_view(), name='recipe_new'),
     # Страница с рецептом
     path('recipe/<slug:slug>/', RecipeSingleView.as_view(), name='recipe'),
+    # Редактирование рецепта
+    path('recipe/<slug:slug>/edit/', RecipeUpdateView.as_view(), name='recipe_edit'),
     # Список рецептов автора
     path('recipe/author/<str:username>/', RecipeAuthorListView.as_view(), name='index_author'),
     # Список рецептов по подписке
     # Список избранных рецептов
     path('favorites/', FavoriteListView.as_view(), name='favorites'),
-    # Редактирование рецепта
+
 
     # path('/', views.as_view(), name='index'),
     # path('author/', ),
