@@ -71,31 +71,48 @@ class FavoriteView(AddMixin, APIView):
         return Response(status=status.HTTP_202_ACCEPTED, data=SUCCESS)
 
 
-class PurchasesViewSet(mixins.CreateModelMixin,
-                       mixins.ListModelMixin,
-                       mixins.DestroyModelMixin,
-                       viewsets.GenericViewSet):
-    # Create, List, Destroy methods
-    serializer_class = CartSerializer
-    permission_classes = [permissions.IsAuthenticated]
+# class PurchasesViewSet(mixins.CreateModelMixin,
+#                        mixins.ListModelMixin,
+#                        mixins.DestroyModelMixin,
+#                        viewsets.GenericViewSet):
+#     # Create, List, Destroy methods
+#     serializer_class = CartSerializer
+#     permission_classes = [permissions.IsAuthenticated]
 
-    def get_queryset(self):
-        cart = Cart(self.request)
-        product_ids = cart.cart.keys()
-        # получение объектов product и добавление их в корзину
-        return Recipe.objects.filter(pk__in=product_ids)
+#     def get_queryset(self):
+#         cart = Cart(self.request)
+#         product_ids = cart.cart.keys()
+#         # получение объектов product и добавление их в корзину
+#         return Recipe.objects.filter(pk__in=product_ids)
 
-    def perform_create(self, serializer):
-        cart = Cart(self.request)
-        recipe = get_object_or_404(Recipe, pk=serializer.data['id'])
-        cart.add(recipe)
-        serializer.save()
+#     def perform_create(self, serializer):
+#         cart = Cart(self.request)
+#         recipe = get_object_or_404(Recipe, pk=serializer.data['id'])
+#         cart.add(recipe)
+#         serializer.save()
 
-    def destroy(self, request, *args, **kwargs):
+#     def destroy(self, request, *args, **kwargs):
+#         cart = Cart(self.request)
+#         recipe = get_object_or_404(Recipe, pk=kwargs['id'])
+#         cart.remove(recipe)
+#         return Response(status=status.HTTP_201_CREATED, data=SUCCESS)
+
+class PurchasesView(APIView):
+
+    def post(self, request):
+        id = int(request.data.get('id', None))
         cart = Cart(self.request)
-        recipe = get_object_or_404(Recipe, pk=kwargs['id'])
-        cart.remove(recipe)
+        if not Recipe.objects.filter(pk=id).exists() or cart.in_cart(id):
+            return Response(status=status.HTTP_400_BAD_REQUEST, data=UNSUCCESS)
+        cart.add(id)
         return Response(status=status.HTTP_201_CREATED, data=SUCCESS)
+
+    def delete(self, request, id):
+        cart = Cart(request)
+        if Recipe.objects.filter(pk=id).exists() and cart.in_cart(id):
+            cart.remove(id)
+            return Response(status=status.HTTP_202_ACCEPTED, data=SUCCESS)
+        return Response(status=status.HTTP_400_BAD_REQUEST, data=UNSUCCESS)
 
 
 class IngredientsView(ListAPIView):

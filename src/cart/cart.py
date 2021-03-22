@@ -1,3 +1,4 @@
+from django.conf import settings
 from recipes.models import Recipe
 
 
@@ -8,37 +9,37 @@ class Cart(object):
         Инициализируем корзину
         """
         self.session = request.session
-        cart = self.session.get('cart')
+        cart = self.session.get(settings.CART_SESSION_ID)
         if not cart:
             # save an empty cart in the session
-            cart = self.session['cart'] = {}
+            cart = self.session[settings.CART_SESSION_ID] = {}
         self.cart = cart
 
-    def add(self, product, quantity=1, update_quantity=False):
+    def in_cart(self, product_id):
+        product_id = str(product_id)
+        return product_id in self.cart
+
+    def add(self, product_id):
         """
         Добавить продукт в корзину или обновить его количество.
         """
-        product_id = str(product.pk)
-        if product_id not in self.cart:
-            self.cart[product_id] = {'quantity': 0}
-        if update_quantity:
-            self.cart[product_id]['quantity'] = quantity
-        else:
-            self.cart[product_id]['quantity'] += quantity
+        product_id = str(product_id)
+        if not self.in_cart(product_id):
+            self.cart[product_id] = 1
         self.save()
 
     def save(self):
         # Обновление сессии cart
-        self.session['cart'] = self.cart
+        self.session[settings.CART_SESSION_ID] = self.cart
         # Отметить сеанс как "измененный", чтобы убедиться, что он сохранен
         self.session.modified = True
     
-    def remove(self, product):
+    def remove(self, product_id):
         """
         Удаление товара из корзины.
         """
-        product_id = str(product.id)
-        if product_id in self.cart:
+        product_id = str(product_id)
+        if self.in_cart(product_id):
             del self.cart[product_id]
             self.save()
 

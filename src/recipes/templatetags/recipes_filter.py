@@ -1,5 +1,6 @@
 from urllib.parse import urlencode
 from django import template
+from cart.cart import Cart
 register = template.Library()
 
 
@@ -41,3 +42,8 @@ def param_replace(context, **kwargs):
         params['tags'] = tags_context
 
     return urlencode(params, doseq=True)
+
+@register.simple_tag(takes_context=True)
+def recipe_in_cart(context, id):
+    cart = Cart(context['request'])
+    return cart.in_cart(id)

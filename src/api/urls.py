@@ -8,4 +8,6 @@ urlpatterns = [
     path('follow/<int:id>/', FollowView.as_view()),
     path('favorites/', FavoriteView.as_view()),
     path('favorites/<int:id>/', FavoriteView.as_view()),
+    path('purchases/', PurchasesView.as_view()),
+    path('purchases/<int:id>/', PurchasesView.as_view()),
 ]

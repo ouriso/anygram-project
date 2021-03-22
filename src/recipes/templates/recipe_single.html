@@ -1,14 +1,13 @@
 {% extends "base.html" %}
 {% load static %}
+{% load recipes_filter %}
 {% block title %}Добро пожаловать на Anygram{% endblock %}
 {% block css %}<link rel="stylesheet" href="{% static 'recipes/pages/single.css' %}">{% endblock %}
 {% block content %}
-
+{% csrf_token %}
 <div class="single-card" data-id="{{ recipe.pk }}" data-author="{{ recipe.author.pk }}">
     {% load thumbnail %}
-    {% thumbnail recipe.image "300x300" crop="center" upscale=True as im %}
-        <img src="{{ im.url }}" alt="Фото рецепта" class="single-card__image">
-    {% endthumbnail %}
+    <img src="{{ recipe.image.url }}" alt="Фото рецепта" class="single-card__image">
     <div class="single-card__info">
         <div class="single-card__header-info">
             <h1 class="single-card__title">{{ recipe.title }}</h1>
@@ -32,10 +31,17 @@
             </ul>
         </div>
         <ul class="single-card__items">
-            {% if user.is_authenticated %}
-            <li class="single-card__item"><button class="button button_style_blue" name="purchases" data-out><span class="icon-plus"></span> Добавить в покупки</button></li>
+            <li class="single-card__item">
+            {% recipe_in_cart recipe.pk as in_cart %}
+            {% if in_cart %}
+                <button class="button button_style_light-blue-outline" name="purchases"><span class="icon-check button__icon"></span>Рецепт добавлен</button>
+            {% else %}
+                <button class="button button_style_light-blue" name="purchases" data-out><span class="icon-plus button__icon"></span>Добавить в покупки</button>
             {% endif %}
+            </li>
+            {% if user.is_authenticated %}
             <li class="single-card__item"><button class="button button_style_light-blue button_size_subscribe" name="subscribe" data-out>Подписаться на автора</button></li>
+            {% endif %}
         </ul>
         <div class="single-card__section">
             <h3 class="single-card__section-title">Ингридиенты:</h3>
