@@ -5,13 +5,9 @@ from recipes.models import Recipe
 class Cart(object):
 
     def __init__(self, request):
-        """
-        Инициализируем корзину
-        """
         self.session = request.session
         cart = self.session.get(settings.CART_SESSION_ID)
         if not cart:
-            # save an empty cart in the session
             cart = self.session[settings.CART_SESSION_ID] = {}
         self.cart = cart
 
@@ -21,7 +17,7 @@ class Cart(object):
 
     def add(self, product_id):
         """
-        Добавить продукт в корзину или обновить его количество.
+        Добавить продукт в корзину или обновить его количество
         """
         product_id = str(product_id)
         if not self.in_cart(product_id):
@@ -29,42 +25,36 @@ class Cart(object):
         self.save()
 
     def save(self):
-        # Обновление сессии cart
+        """
+        Обновление сессии cart
+        """
         self.session[settings.CART_SESSION_ID] = self.cart
-        # Отметить сеанс как "измененный", чтобы убедиться, что он сохранен
         self.session.modified = True
     
     def remove(self, product_id):
         """
-        Удаление товара из корзины.
+        Удаление товара из корзины
         """
         product_id = str(product_id)
         if self.in_cart(product_id):
             del self.cart[product_id]
             self.save()
 
-    def __iter__(self):
+    def get_ids(self):
         """
-        Перебор элементов в корзине и получение продуктов из базы данных.
+        Получение всех элементов корзины
         """
-        product_ids = self.cart.keys()
-        # получение объектов product и добавление их в корзину
-        products = Recipe.objects.filter(id__in=product_ids)
-        for product in products:
-            self.cart[str(product.id)]['product'] = product
-
-        # for item in self.cart.values():
-        #     item['price'] = Decimal(item['price'])
-        #     item['total_price'] = item['price'] * item['quantity']
-        #     yield item
+        return self.cart.keys()
 
     def __len__(self):
         """
         Подсчет всех товаров в корзине.
         """
-        return sum(item['quantity'] for item in self.cart.values())
+        return len(self.cart)
 
     def clear(self):
-        # удаление корзины из сессии
+        """
+        Удаление корзины из сессии
+        """
         del self.session['cart']
         self.session.modified = True

@@ -8,8 +8,17 @@ User = get_user_model()
 
 
 class Tag(models.Model):
+    class Colors(models.TextChoices):
+        ORANGE = 'badge badge_style_orange'
+        GREEN = 'badge badge_style_green'
+        PURPLE = 'badge badge_style_purple'
+
     title = models.CharField('Название тега', max_length=30)
     slug = models.SlugField(unique=True)
+    color = models.CharField(
+        'Выберите цвет тега',
+        max_length=30, choices=Colors.choices, default=Colors.PURPLE
+    )
 
     def save(self, *args, **kwargs):
         if not self.slug:

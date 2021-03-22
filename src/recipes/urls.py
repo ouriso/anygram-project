@@ -1,6 +1,5 @@
 from .views import *
 from django.urls import path
-from django.urls.conf import include
 
 urlpatterns = [
     # Список рецептов, начальная страница
@@ -16,10 +15,4 @@ urlpatterns = [
     # Список рецептов по подписке
     # Список избранных рецептов
     path('favorites/', FavoriteListView.as_view(), name='favorites'),
-
-
-    # path('/', views.as_view(), name='index'),
-    # path('author/', ),
-    # path('recipes/', ),
-    # path('')
 ]

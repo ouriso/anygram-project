@@ -64,6 +64,7 @@ class RecipeSingleView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['recipeingredients'] = RecipeIngredient.objects.filter(recipe=self.get_object())
+        context['tags'] = self.get_object().tags.all()
         return context
 
 

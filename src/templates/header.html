@@ -7,7 +7,7 @@
             <li class="nav__item{% if request.path == '/recipe/new/' %} nav__item_active{% endif %}"><a href="{% url 'recipe_new' %}" class="nav__link link">Создать рецепт</a></li>
             <li class="nav__item{% if request.path == '/favorites/' %} nav__item_active{% endif %}"><a href="{% url 'favorites' %}" class="nav__link link">Избранное</a></li>
             {% endif %}
-            <li class="nav__item{% if request.path == '/cart' %} nav__item_active{% endif %}"><a href="#" class="nav__link link">Список покупок</a> <span class="badge badge_style_blue nav__badge" id="counter">{% if cart|length > 0 %}{{ cart|length }}{% endif %}</span></li>
+            <li class="nav__item{% if request.path == '/cart' %} nav__item_active{% endif %}"><a href="{% url 'my_cart' %}" class="nav__link link">Список покупок</a> <span class="badge badge_style_blue nav__badge" id="counter">{{ cart|length }}</span></li>
 
         </ul>
         <ul class="nav__items list">
