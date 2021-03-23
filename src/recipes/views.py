@@ -1,13 +1,9 @@
-from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.forms import models
-from django.http import request, HttpResponseRedirect
-from django.template.defaultfilters import slugify
-from django.urls.base import reverse
+from django.http import HttpResponseRedirect, HttpResponseForbidden
 
 from recipes.forms import RecipeCreateForm, IngredientFormSet
-from .models import Recipe, RecipeIngredient, Tag
+from .models import Recipe, RecipeIngredient
 from django.shortcuts import get_object_or_404
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
 
@@ -23,7 +19,7 @@ class RecipeListView(ListView):
         queryset = Recipe.objects.all()
         self.filter_tags = self.request.GET.getlist('tags')
         if self.filter_tags != []:
-            queryset = queryset.filter(tags__in=self.filter_tags)
+            queryset = queryset.filter(tags__in=self.filter_tags).distinct()
         return queryset
 
     def get_context_data(self, **kwargs):
@@ -45,7 +41,7 @@ class RecipeAuthorListView(ListView):
         queryset = Recipe.objects.filter(author=self.get_author())
         self.filter_tags = self.request.GET.getlist('tags')
         if self.filter_tags != []:
-            queryset = queryset.filter(tags__in=self.filter_tags)
+            queryset = queryset.filter(tags__in=self.filter_tags).distinct()
         return queryset
 
     def get_context_data(self, **kwargs):
@@ -117,6 +113,8 @@ class RecipeUpdateView(LoginRequiredMixin, UpdateView):
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
+        if self.object.author != request.user:
+            return HttpResponseForbidden()
         form_class = self.get_form_class()
         form = RecipeCreateForm(instance=self.object)
         ingredient_form = IngredientFormSet()
@@ -158,7 +156,7 @@ class FavoriteListView(LoginRequiredMixin, ListView):
         queryset = Recipe.objects.filter(in_favorite=self.request.user)
         self.filter_tags = self.request.GET.getlist('tags')
         if self.filter_tags != []:
-            queryset = queryset.filter(tags__in=self.filter_tags)
+            queryset = queryset.filter(tags__in=self.filter_tags).distinct()
         return queryset
 
     def get_context_data(self, **kwargs):
