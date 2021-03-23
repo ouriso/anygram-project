@@ -1,12 +1,12 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpResponseRedirect, HttpResponseForbidden
-
-from recipes.forms import RecipeCreateForm, IngredientFormSet
-from .models import Recipe, RecipeIngredient
+from django.http import HttpResponseForbidden, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
 
+from recipes.forms import IngredientFormSet, RecipeCreateForm
+
+from .models import Recipe, RecipeIngredient
 
 User = get_user_model()
 
@@ -59,7 +59,9 @@ class RecipeSingleView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['recipeingredients'] = RecipeIngredient.objects.filter(recipe=self.get_object())
+        context['recipeingredients'] = RecipeIngredient.objects.filter(
+            recipe=self.get_object()
+        )
         context['tags'] = self.get_object().tags.all()
         return context
 
@@ -115,7 +117,6 @@ class RecipeUpdateView(LoginRequiredMixin, UpdateView):
         self.object = self.get_object()
         if self.object.author != request.user:
             return HttpResponseForbidden()
-        form_class = self.get_form_class()
         form = RecipeCreateForm(instance=self.object)
         ingredient_form = IngredientFormSet()
         return self.render_to_response(
@@ -164,6 +165,7 @@ class FavoriteListView(LoginRequiredMixin, ListView):
         context['title'] = 'Избранные рецепты'
         context['tags'] = self.filter_tags
         return context
+
 
 class FollowListView(LoginRequiredMixin, ListView):
     paginate_by = 3

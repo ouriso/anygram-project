@@ -1,9 +1,11 @@
-from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm, PasswordResetForm, UserCreationForm
-from django.shortcuts import redirect, render
-from django.views.generic import CreateView
+from django.contrib.auth.forms import (AuthenticationForm, PasswordChangeForm,
+                                       PasswordResetForm)
+from django.shortcuts import render
 from django.urls import reverse_lazy
+from django.views.generic import CreateView
 
 from .forms import CreationForm
+
 
 def done_view(request, message):
     return render(request, 'custom_page.html', {message: message})

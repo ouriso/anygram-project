@@ -1,19 +1,18 @@
 import io
+
+import reportlab
+from django.conf import settings
 from django.http import FileResponse
 from django.shortcuts import redirect
 from django.views.generic import ListView
-from cart.cart import Cart
-from django.conf import settings
-import reportlab
 from reportlab.lib.pagesizes import A4
-from reportlab.pdfgen import canvas
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
+from reportlab.pdfgen import canvas
 
-
+from cart.cart import Cart
 from recipes.models import Recipe, RecipeIngredient
 
-# Create your views here.
 
 class CartListView(ListView):
     template_name = 'my_cart.html'
@@ -28,11 +27,13 @@ class CartListView(ListView):
         context['title'] = 'Список покупок'
         return context
 
+
 def delete_from_cart(request, id):
     cart = Cart(request)
     if cart.in_cart(id):
         cart.remove(id)
     return redirect('my_cart')
+
 
 def prepare_file(string_list):
     buffer = io.BytesIO()
@@ -51,10 +52,13 @@ def prepare_file(string_list):
     buffer.seek(0)
     return buffer
 
+
 def download_cart(request):
     cart = Cart(request)
     recipes_id = cart.get_ids()
-    recipes = RecipeIngredient.objects.filter(recipe__pk__in=recipes_id).select_related('ingredient').select_related('recipe')
+    recipes = RecipeIngredient.objects.filter(
+        recipe__pk__in=recipes_id
+    ).select_related('ingredient').select_related('recipe')
     recipe_names = set()
     ingredients_count = {}
     for item in recipes:
@@ -62,7 +66,9 @@ def download_cart(request):
         if ingredients_count.get(item.ingredient.title) is not None:
             ingredients_count[item.ingredient.title][0] += item.amount
         else:
-            ingredients_count[item.ingredient.title] = [item.amount, item.ingredient.dimension]
+            ingredients_count[item.ingredient.title] = [
+                item.amount, item.ingredient.dimension
+            ]
 
     to_file = ['Список покупок\n', 'Для рецептов:\n']
     for title in recipe_names:

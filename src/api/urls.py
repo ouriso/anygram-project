@@ -1,13 +1,14 @@
-from django.urls import include, path
+from django.urls import path
 
-from .views import *
+from . import views
 
 urlpatterns = [
-    path('ingredients/', IngredientsView.as_view(), name='ingredients-list'),
-    path('follow/', FollowView.as_view()),
-    path('follow/<int:id>/', FollowView.as_view()),
-    path('favorites/', FavoriteView.as_view()),
-    path('favorites/<int:id>/', FavoriteView.as_view()),
-    path('purchases/', PurchasesView.as_view()),
-    path('purchases/<int:id>/', PurchasesView.as_view()),
+    path('ingredients/', views.IngredientsView.as_view(),
+         name='ingredients-list'),
+    path('follow/', views.FollowView.as_view()),
+    path('follow/<int:id>/', views.FollowView.as_view()),
+    path('favorites/', views.FavoriteView.as_view()),
+    path('favorites/<int:id>/', views.FavoriteView.as_view()),
+    path('purchases/', views.PurchasesView.as_view()),
+    path('purchases/<int:id>/', views.PurchasesView.as_view()),
 ]

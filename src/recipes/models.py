@@ -1,7 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.urls import reverse
-
 from pytils.translit import slugify
 
 User = get_user_model()
@@ -44,16 +43,21 @@ class Ingredient(models.Model):
 
 
 class Recipe(models.Model):
-    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='recipes')
+    author = models.ForeignKey(User, on_delete=models.CASCADE,
+                               related_name='recipes')
     title = models.CharField('Название рецепта', max_length=100)
     slug = models.SlugField(unique=True)
     description = models.TextField('Описание рецепта')
     duration = models.PositiveSmallIntegerField('Время приготовления, мин')
-    pub_date = models.DateTimeField('Дата публикации', auto_now_add=True, db_index=True)
+    pub_date = models.DateTimeField('Дата публикации', auto_now_add=True,
+                                    db_index=True)
     image = models.ImageField(upload_to='recipes/', blank=True, null=True)
-    ingredients = models.ManyToManyField(Ingredient, through='RecipeIngredient', blank=True)
+    ingredients = models.ManyToManyField(
+        Ingredient, through='RecipeIngredient', blank=True
+    )
     tags = models.ManyToManyField(Tag, related_name='recipes', blank=True)
-    in_favorite = models.ManyToManyField(User, related_name='favorites', blank=True)
+    in_favorite = models.ManyToManyField(User, related_name='favorites',
+                                         blank=True)
 
     def get_absolute_url(self):
         return reverse('recipe', args=[str(self.slug)])

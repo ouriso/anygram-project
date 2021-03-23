@@ -1,5 +1,4 @@
 from django.conf import settings
-from recipes.models import Recipe
 
 
 class Cart(object):
@@ -30,7 +29,7 @@ class Cart(object):
         """
         self.session[settings.CART_SESSION_ID] = self.cart
         self.session.modified = True
-    
+
     def remove(self, product_id):
         """
         Удаление товара из корзины
