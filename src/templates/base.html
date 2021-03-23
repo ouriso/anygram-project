@@ -9,7 +9,7 @@
     </head>
     <body class="body">
         <header class="header">
-            {% include 'header.html' %}
+            {% include 'include/header.html' %}
         </header>
         <main class="main container">
             {% block content %}
@@ -17,7 +17,7 @@
             {% endblock %}
         </main>
         <footer class="footer">
-            {% include 'footer.html' %}
+            {% include 'include/footer.html' %}
         </footer>
         {% block scripts %}
         {% endblock %}

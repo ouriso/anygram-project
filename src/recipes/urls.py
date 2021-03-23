@@ -13,6 +13,7 @@ urlpatterns = [
     # Список рецептов автора
     path('recipe/author/<str:username>/', RecipeAuthorListView.as_view(), name='index_author'),
     # Список рецептов по подписке
+    path('follow/', FollowListView.as_view(), name='index_follow'),
     # Список избранных рецептов
     path('favorites/', FavoriteListView.as_view(), name='favorites'),
 ]

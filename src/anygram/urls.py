@@ -25,7 +25,6 @@ urlpatterns = [
     path('auth/', include('users.urls')),
     path('', include('recipes.urls')),
     path('api/', include('api.urls')),
-    path('follow/', include('follow.urls')),
     path('cart/', include('cart.urls')),
 ]
 
@@ -33,6 +32,5 @@ if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     urlpatterns += static(
         settings.STATIC_URL,
-        # show_indexes=True,
         document_root=settings.STATIC_ROOT
     )

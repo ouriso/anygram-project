@@ -166,3 +166,16 @@ class FavoriteListView(LoginRequiredMixin, ListView):
         context['title'] = 'Избранные рецепты'
         context['tags'] = self.filter_tags
         return context
+
+class FollowListView(LoginRequiredMixin, ListView):
+    paginate_by = 3
+    template_name = 'follow_index.html'
+
+    def get_queryset(self):
+        queryset = list(self.request.user.follow.all())
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Ваши подписки'
+        return context
