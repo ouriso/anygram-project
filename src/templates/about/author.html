@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Об авторе{% endblock %}
+{% block css %}<link rel="stylesheet" href="{% static 'recipes/pages/single.css' %}">{% endblock %}
+{% block content %}
+    <div class="single-card">
+        <img src="/media/about/author.jpg" alt="Фото меня" class="single-card__image">
+        <div class="single-card__info">
+            <div class="single-card__header-info">
+                <h1 class="single-card__title">Обо мне</h1>
+            </div>
+            <div class="single-card__section">
+                <h3 class="single-card__section-title">Увлечения</h3>
+                <div class="single-card__items single-card__items_column">
+                    <p class=" single-card__section-item">- Капоэйра</p>
+                    <p class=" single-card__section-item">- Фотография</p>
+                    <p class=" single-card__section-item">- Программирование</p>
+                    <p class=" single-card__section-item">- Инжиниринг</p>
+                </div>
+            </div>
+            <div class="single-card__section">
+                <h3 class="single-card__section-title">Как докатился до жизни такой</h3>
+                <p class="single-card__section-text">Обучался я, значит, в Яндекс.Практикуме...</p>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block script %}{% endblock %}

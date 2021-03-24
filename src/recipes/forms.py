@@ -4,6 +4,11 @@ from .models import Recipe, RecipeIngredient
 
 
 class RecipeCreateForm(forms.ModelForm):
+    title = forms.CharField(initial='Название рецепта')
+    duration = forms.IntegerField(initial=30)
+    description = forms.CharField(
+        widget=forms.Textarea(), initial='Последовательность приготовления'
+    )
 
     class Meta:
         model = Recipe

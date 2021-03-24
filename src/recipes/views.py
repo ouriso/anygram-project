@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseForbidden, HttpResponseRedirect
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
 
 from recipes.forms import IngredientFormSet, RecipeCreateForm
@@ -11,15 +11,20 @@ from .models import Recipe, RecipeIngredient
 User = get_user_model()
 
 
+def filter_by_tags(request, queryset):
+    filter_tags = request.GET.getlist('tags')
+    if filter_tags != []:
+        queryset = queryset.filter(tags__in=filter_tags).distinct()
+    return (queryset, filter_tags)
+
+
 class RecipeListView(ListView):
     paginate_by = 9
-    template_name = 'recipe_index.html'
+    template_name = 'recipes/recipe_index.html'
 
     def get_queryset(self):
         queryset = Recipe.objects.all()
-        self.filter_tags = self.request.GET.getlist('tags')
-        if self.filter_tags != []:
-            queryset = queryset.filter(tags__in=self.filter_tags).distinct()
+        queryset, self.filter_tags = filter_by_tags(self.request, queryset)
         return queryset
 
     def get_context_data(self, **kwargs):
@@ -31,7 +36,7 @@ class RecipeListView(ListView):
 
 class RecipeAuthorListView(ListView):
     paginate_by = 9
-    template_name = 'recipe_author.html'
+    template_name = 'recipes/recipe_author.html'
 
     def get_author(self):
         author = get_object_or_404(User, username=self.kwargs.get('username'))
@@ -39,9 +44,7 @@ class RecipeAuthorListView(ListView):
 
     def get_queryset(self):
         queryset = Recipe.objects.filter(author=self.get_author())
-        self.filter_tags = self.request.GET.getlist('tags')
-        if self.filter_tags != []:
-            queryset = queryset.filter(tags__in=self.filter_tags).distinct()
+        queryset, self.filter_tags = filter_by_tags(self.request, queryset)
         return queryset
 
     def get_context_data(self, **kwargs):
@@ -55,7 +58,7 @@ class RecipeAuthorListView(ListView):
 
 class RecipeSingleView(DetailView):
     queryset = Recipe.objects.all()
-    template_name = 'recipe_single.html'
+    template_name = 'recipes/recipe_single.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -69,7 +72,7 @@ class RecipeSingleView(DetailView):
 class RecipeCreateView(LoginRequiredMixin, CreateView):
     model = Recipe
     form_class = RecipeCreateForm
-    template_name = 'recipe_create.html'
+    template_name = 'recipes/recipe_form.html'
     success_url = ''
 
     def get(self, request, *args, **kwargs):
@@ -110,7 +113,7 @@ class RecipeCreateView(LoginRequiredMixin, CreateView):
 class RecipeUpdateView(LoginRequiredMixin, UpdateView):
     model = Recipe
     form_class = RecipeCreateForm
-    template_name = 'recipe_update.html'
+    template_name = 'recipes/recipe_form.html'
     success_url = ''
 
     def get(self, request, *args, **kwargs):
@@ -151,13 +154,11 @@ class RecipeUpdateView(LoginRequiredMixin, UpdateView):
 
 class FavoriteListView(LoginRequiredMixin, ListView):
     paginate_by = 9
-    template_name = 'recipe_index.html'
+    template_name = 'recipes/recipe_index.html'
 
     def get_queryset(self):
         queryset = Recipe.objects.filter(in_favorite=self.request.user)
-        self.filter_tags = self.request.GET.getlist('tags')
-        if self.filter_tags != []:
-            queryset = queryset.filter(tags__in=self.filter_tags).distinct()
+        queryset, self.filter_tags = filter_by_tags(self.request, queryset)
         return queryset
 
     def get_context_data(self, **kwargs):
@@ -169,7 +170,7 @@ class FavoriteListView(LoginRequiredMixin, ListView):
 
 class FollowListView(LoginRequiredMixin, ListView):
     paginate_by = 3
-    template_name = 'follow_index.html'
+    template_name = 'recipes/follow_index.html'
 
     def get_queryset(self):
         queryset = list(self.request.user.follow.all())
@@ -179,3 +180,12 @@ class FollowListView(LoginRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Ваши подписки'
         return context
+
+
+def page_not_found(request, exception):
+    return render(request, 'misc/404.html',
+                  {'path': request.path}, status=404)
+
+
+def server_error(request):
+    return render(request, 'misc/500.html', status=500)
