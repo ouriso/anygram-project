@@ -21,7 +21,9 @@
                 </li>
             </ul>
             {% endfor %}
-            <a href="{% url 'cart_download' %}"><button class="button button_style_blue">Скачать список</button></a>
+            {% if cart|length > 0 %}
+                <a href="{% url 'cart_download' %}"><button class="button button_style_blue">Скачать список</button></a>
+            {% endif %}
         </div>
 {% endblock %}
 {% block scripts %}
