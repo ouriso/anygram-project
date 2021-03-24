@@ -30,25 +30,25 @@ def recipes_count(recipes):
 
 @register.simple_tag(takes_context=True)
 def param_replace(context, **kwargs):
-    d = context['request'].GET.copy()
+    cur_params = context['request'].GET.copy()
     tag = kwargs.get('tag')
     page = kwargs.get('page')
-    tags_context = d.getlist('tags', [])
-    params = {}
+    tags_context = cur_params.getlist('tags', [])
+    new_params = {}
 
     if page is not None:
-        params['page'] = page
+        new_params['page'] = page
 
     if tag is not None:
         if str(tag) not in tags_context:
             tags_context.append(tag)
         else:
             tags_context.remove(tag)
-        params['tags'] = tags_context
+        new_params['tags'] = tags_context
     elif tags_context != []:
-        params['tags'] = tags_context
+        new_params['tags'] = tags_context
 
-    return urlencode(params, doseq=True)
+    return urlencode(new_params, doseq=True)
 
 
 @register.simple_tag(takes_context=True)

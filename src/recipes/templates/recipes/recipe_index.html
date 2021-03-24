@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load recipes_filter %}
+{% block title %}{{ title }}{% endblock %}
+{% block css %}<link rel="stylesheet" href="{% static 'recipes/pages/index.css' %}">{% endblock %}
+{% block content %}
+{% csrf_token %}
+    {% include 'includes/tags_table.html' with title=title tags=tags %}
+    <div class="card-list">
+        {% for recipe in object_list %}
+            {% include 'recipes/recipe_item.html' with recipe=recipe %}
+        {% endfor %}
+    </div>
+    {% if page_obj.has_other_pages %}
+        {% include 'includes/paginator.html' with items=page_obj paginator=paginator %}
+    {% endif %}
+
+{% endblock %}
+{% block scripts %}
+    <script src="{% static 'recipes/js/components/MainCards.js' %}"></script>
+
+    <script src="{% static 'recipes/js/components/Purchases.js' %}"></script>
+    <script src="{% static 'recipes/js/components/Favorites.js' %}"></script>
+
+    <script src="{% static 'recipes/js/config/config.js' %}"></script>
+    <script src="{% static 'recipes/js/components/CardList.js' %}"></script>
+    <script src="{% static 'recipes/js/components/Header.js' %}"></script>
+
+    <script src="{% static 'recipes/js/api/Api.js' %}"></script>
+    {% if request.resolver_match.url_name == 'index' %}
+        <script src="{% static 'recipes/indexAuth.js' %}"></script>
+    {% elif request.resolver_match.url_name == 'favorites' %}
+        <script src="{% static 'recipes/favorite.js' %}"></script>
+    {% endif %}
+{% endblock %}

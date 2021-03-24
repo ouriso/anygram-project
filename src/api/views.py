@@ -1,5 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
+from django.db import models
+from django.http.response import Http404
 from django.shortcuts import get_object_or_404
 from rest_framework import permissions, status
 from rest_framework.filters import SearchFilter
@@ -23,9 +25,7 @@ class AddMixin:
     model = None
 
     def get_instance(self, request):
-        id = int(request.data.get('id', None))
-        if id is None:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+        id = request.data.get('id')
         instance = get_object_or_404(self.model, pk=id)
         return instance
 
@@ -41,12 +41,8 @@ class FollowView(AddMixin, APIView):
 
     def delete(self, request, id):
         user = request.user
-        try:
-            following = User.objects.get(pk=id)
-            user.follow.remove(following)
-        except ObjectDoesNotExist:
-            return Response(status=status.HTTP_400_BAD_REQUEST,
-                            data=UNSUCCESS)
+        following = get_object_or_404(User, pk=id)
+        user.follow.remove(following)
         return Response(status=status.HTTP_202_ACCEPTED, data=SUCCESS)
 
 
@@ -61,19 +57,15 @@ class FavoriteView(AddMixin, APIView):
 
     def delete(self, request, id):
         user = request.user
-        try:
-            recipe = Recipe.objects.get(pk=id)
-            recipe.in_favorite.remove(user)
-        except ObjectDoesNotExist:
-            return Response(status=status.HTTP_400_BAD_REQUEST,
-                            data=UNSUCCESS)
+        recipe = get_object_or_404(Recipe, pk=id)
+        recipe.in_favorite.remove(user)
         return Response(status=status.HTTP_202_ACCEPTED, data=SUCCESS)
 
 
 class PurchasesView(APIView):
 
     def post(self, request):
-        id = int(request.data.get('id', None))
+        id = request.data.get('id')
         cart = Cart(self.request)
         if not Recipe.objects.filter(pk=id).exists() or cart.in_cart(id):
             return Response(status=status.HTTP_400_BAD_REQUEST,

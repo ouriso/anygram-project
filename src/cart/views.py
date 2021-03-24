@@ -15,7 +15,7 @@ from recipes.models import Recipe, RecipeIngredient
 
 
 class CartListView(ListView):
-    template_name = 'my_cart.html'
+    template_name = 'cart/my_cart.html'
 
     def get_queryset(self):
         cart = Cart(self.request)
@@ -63,12 +63,12 @@ def download_cart(request):
     ingredients_count = {}
     for item in recipes:
         recipe_names.add(item.recipe.title)
-        if ingredients_count.get(item.ingredient.title) is not None:
-            ingredients_count[item.ingredient.title][0] += item.amount
-        else:
-            ingredients_count[item.ingredient.title] = [
-                item.amount, item.ingredient.dimension
-            ]
+
+        title = item.ingredient.title
+        amount = item.amount
+        dimension = item.ingredient.dimension
+        ing = ingredients_count.get(title, [0, dimension])
+        ingredients_count[title] = [ing[0] + amount, dimension]
 
     to_file = ['Список покупок\n', 'Для рецептов:\n']
     for title in recipe_names:
