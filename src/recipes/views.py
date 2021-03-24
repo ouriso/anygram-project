@@ -3,13 +3,13 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseForbidden, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
-from django.urls import reverse
 
 from recipes.forms import IngredientFormSet, RecipeCreateForm
 
 from .models import Recipe, RecipeIngredient
 
 User = get_user_model()
+
 
 def filter_by_tags(request, queryset):
     filter_tags = request.GET.getlist('tags')

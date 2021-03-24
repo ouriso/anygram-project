@@ -1,7 +1,4 @@
 from django.contrib.auth import get_user_model
-from django.core.exceptions import ObjectDoesNotExist
-from django.db import models
-from django.http.response import Http404
 from django.shortcuts import get_object_or_404
 from rest_framework import permissions, status
 from rest_framework.filters import SearchFilter

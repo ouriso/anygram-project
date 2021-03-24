@@ -35,7 +35,8 @@ class Tag(models.Model):
 class Ingredient(models.Model):
     title = models.CharField('название ингредиента', max_length=50)
     slug = models.SlugField(unique=True)
-    dimension = models.CharField('единицы измерения', max_length=15, default='шт.')
+    dimension = models.CharField('единицы измерения',
+                                 max_length=15, default='шт.')
 
     class Meta:
         verbose_name = 'Ингредиент'

@@ -87,7 +87,7 @@
                 </div>
             </div>
             <div class="form__group">
-                <label for="{{form.description.id_for_label}}" class="form__label">Описание</label>
+                <label for="{{ form.description.id_for_label }}" class="form__label">Описание</label>
                 <div class="form__field-group">
                     <textarea name="description" id="id_description" rows="8" class="form__textarea">{{ form.description.value }}</textarea>
                     {% if form.description.errors %}
