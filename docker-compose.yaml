@@ -14,13 +14,13 @@ services:
     env_file:
       - ./.env
   web:
-    build: .
+    image: ouriso/anygram:latest
     command: gunicorn anygram.wsgi:application --bind 0.0.0.0:8000
     restart: always
     volumes:
-      - static_volume:/src/static
-      - media_volume:/src/media
-      - nginx_conf:/nginx/
+      - static_volume:/src/staticfiles
+      - media_volume:/src/mediafiles
+      - nginx_conf:/nginx
     expose:
       - "8000"
     depends_on:
@@ -31,9 +31,9 @@ services:
     image: nginx:1.19.7
     restart: always
     volumes:
-      - static_volume:/src/static
-      - media_volume:/src/media
-      - nginx_conf:/etc/nginx/conf.d/
+      - static_volume:/src/staticfiles
+      - media_volume:/src/mediafiles
+      - nginx_conf:/etc/nginx/conf.d
     ports:
       - "80:80"
     depends_on:
