@@ -14,7 +14,7 @@ urlpatterns = [
     path('auth/', include('users.urls')),
     path('auth/', include('django.contrib.auth.urls')),
     path('', include('recipes.urls')),
-    path('api/v1/', include('api.urls')),
+    path('api/', include('api.urls')),
     path('cart/', include('cart.urls')),
     path('about/author/', TemplateView.as_view(
         template_name='about/author.html'
