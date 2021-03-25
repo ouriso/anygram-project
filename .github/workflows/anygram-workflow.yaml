@@ -19,7 +19,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
     - name: Lint with flake8
-      run: flake8 --exclude=recipes/migrations/,users/migrations/
+      run: flake8 --exclude=src/recipes/migrations/,src/users/migrations/
 
   build_and_push_to_docker_hub:
     name: Push Docker image to Docker Hub
