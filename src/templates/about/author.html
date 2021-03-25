@@ -4,7 +4,7 @@
 {% block css %}<link rel="stylesheet" href="{% static 'recipes/pages/single.css' %}">{% endblock %}
 {% block content %}
     <div class="single-card">
-        <img src="/media/about/author.jpg" alt="Фото меня" class="single-card__image">
+        <img src="{% get_media_prefix %}about/author.jpg" alt="Фото меня" class="single-card__image">
         <div class="single-card__info">
             <div class="single-card__header-info">
                 <h1 class="single-card__title">Обо мне</h1>

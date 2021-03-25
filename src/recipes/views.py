@@ -1,21 +1,15 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseForbidden, HttpResponseRedirect
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
 
 from recipes.forms import IngredientFormSet, RecipeCreateForm
 
 from .models import Recipe, RecipeIngredient
+from .utils import filter_by_tags
 
 User = get_user_model()
-
-
-def filter_by_tags(request, queryset):
-    filter_tags = request.GET.getlist('tags')
-    if filter_tags != []:
-        queryset = queryset.filter(tags__in=filter_tags).distinct()
-    return (queryset, filter_tags)
 
 
 class RecipeListView(ListView):
@@ -180,12 +174,3 @@ class FollowListView(LoginRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Ваши подписки'
         return context
-
-
-def page_not_found(request, exception):
-    return render(request, 'misc/404.html',
-                  {'path': request.path}, status=404)
-
-
-def server_error(request):
-    return render(request, 'misc/500.html', status=500)
