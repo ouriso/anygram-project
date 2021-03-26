@@ -2,8 +2,9 @@ from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from rest_framework import permissions, status
 from rest_framework.filters import SearchFilter
+from rest_framework.mixins import ListModelMixin
 from rest_framework.response import Response
-from rest_framework.viewsets import ViewSet
+from rest_framework.viewsets import GenericViewSet, ViewSet
 
 from cart.cart import Cart
 from recipes.models import Ingredient, Recipe
@@ -77,14 +78,9 @@ class PurchasesView(ViewSet):
         return Response(status=status.HTTP_400_BAD_REQUEST, data=UNSUCCESS)
 
 
-class IngredientsView(ViewSet):
+class IngredientsView(ListModelMixin, GenericViewSet):
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
     permission_classes = [permissions.IsAuthenticated]
     filter_backends = [SearchFilter]
-    search_fields = ['title', 'slug']
-
-    def list(self, request):
-        queryset = self.queryset
-        serializer = IngredientSerializer(queryset, many=True)
-        return Response(serializer.data)
+    search_fields = ['^title', '^slug']

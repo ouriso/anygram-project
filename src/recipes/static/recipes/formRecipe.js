@@ -31,12 +31,12 @@ function Ingredients() {
             nameIngredient.value = e.target.textContent;
             formDropdownItems.style.display = ''
             cantidadVal.textContent = e.target.getAttribute('data-val');
-            cantidadId.textContent = e.target.getAttribute('data-id');
+            cantidadId.value = e.target.getAttribute('data-id');
         }
     };
     // Добавление элемента из инпута
     const addIngredient = (e) => {
-        if(nameIngredient.value && cantidad.value) {
+        if(cantidadId.value && nameIngredient.value && cantidad.value > 0) {
             const data = getValue();
             const elem = document.createElement('div');
             elem.classList.add('form__field-item-ingredient');
@@ -47,7 +47,7 @@ function Ingredients() {
                              <input id="unitsIngredient_${cur}" name="recipeingredient_set-${cur-1}-dimension" type="hidden" value="${data.units}">
                              <input id="idIngredient_${cur}" name="recipeingredient_set-${cur-1}-ingredient" type="hidden" value="${data.id}">`;
             cur++;
-            console.log(data)
+
             ingredientsContainer.appendChild(elem);
         }
     };
@@ -67,7 +67,7 @@ function Ingredients() {
             name: nameIngredient.value,
             value: cantidad.value,
             units: cantidadVal.textContent,
-            id: cantidadId.textContent
+            id: cantidadId.value
         };
         clearValue(nameIngredient);
         clearValue(cantidad);
@@ -87,6 +87,10 @@ function Ingredients() {
 }
 
 const cbEventInput = (elem) => {
+    if(elem.target.value.length == 0) {
+        formDropdownItems.style.display = 'none';
+        return
+    }
     return api.getIngredients(elem.target.value).then( e => {
         if(e.length !== 0 ) {
             const items = e.map( elem => {
@@ -110,5 +114,3 @@ const ingredients = Ingredients();
 formDropdownItems.addEventListener('click', ingredients.dropdown);
 // вешаем слушатель на кнопку
 addIng.addEventListener('click', ingredients.addIngredient);
-
-
