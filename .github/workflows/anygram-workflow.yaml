@@ -73,7 +73,7 @@ jobs:
           export POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
           export DB_HOST=${{ secrets.DB_HOST }}
           export DB_PORT=${{ secrets.DB_PORT }}
-          docker-compose stop
+          docker-compose down
           docker-compose up -d --force-recreate --build
           docker-compose exec web python manage.py migrate --noinput
           docker-compose exec web python manage.py collectstatic --no-input
