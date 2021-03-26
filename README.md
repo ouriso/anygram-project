@@ -1,6 +1,6 @@
 # foodgram-project
 foodgram-project
 
-![Workflow status](https://github.com/ouriso/foodgram_project/actions/workflows/anygram_workflow.yaml/badge.svg)
+![Workflow status](https://github.com/ouriso/foodgram-project/actions/workflows/anygram-workflow.yaml/badge.svg)
 
-Развернутый проект можно [посмотреть по этой ссылке](http://thehedgehognotes.ml/api/v1/)
+Развернутый проект можно [посмотреть по этой ссылке](http://thehedgehognotes.ml)
