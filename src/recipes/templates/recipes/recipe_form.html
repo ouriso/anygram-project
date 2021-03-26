@@ -101,8 +101,7 @@
                     {% if form.image.value.url is not None %}
                         <a href="{{ form.image.value.url }}">{{ form.image.value }}</a>
                     {% endif %}
-                    <label for="id_image" class="form__file-button">Выбрать файл</label>
-                    <input type="file" name="image" id="id_image" class="form__file">
+                    <input type="file" name="image" id="id_image">
                     {% if form.image.errors %}
                         <span class="form__error" role="alert">{{ form.image.errors }}</span>
                     {% endif %}
