@@ -1,5 +1,5 @@
-# foodgram-project
-foodgram-project
+# anygram-project
+Проект посвящен различным рецептам
 
 ![Workflow status](https://github.com/ouriso/foodgram-project/actions/workflows/anygram-workflow.yaml/badge.svg)
 
