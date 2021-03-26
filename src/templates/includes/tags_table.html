@@ -4,15 +4,15 @@
     <ul class="tags">
         <li class="tags__item">
             <a id="breakfast" class="tags__checkbox tags__checkbox_style_orange{% if '1' in tags %} tags__checkbox_active{% endif %}" href="?{% param_replace tag='1'%}"></a>
-            <span class="tags__label">Завтрак</span>
+            <span class="tags__label">{% get_tag_title 1 %}</span>
         </li>
         <li class="tags__item">
             <a id="lunch" class="tags__checkbox tags__checkbox_style_green{% if '2' in tags %} tags__checkbox_active{% endif %}" href="?{% param_replace tag='2'%}"></a>
-            <span for="lunch" class="tags__label">Обед</span>
+            <span for="lunch" class="tags__label">{% get_tag_title 2 %}</span>
         </li>
         <li class="tags__item">
             <a id="dinner" class="tags__checkbox tags__checkbox_style_purple{% if '3' in tags %} tags__checkbox_active{% endif %}" href="?{% param_replace tag='3'%}"></a>
-            <label for="dinner" class="tags__label">Ужин</label>
+            <label for="dinner" class="tags__label">{% get_tag_title 3 %}</label>
         </li>
     </ul>
 </div>

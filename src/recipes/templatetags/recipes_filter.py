@@ -1,8 +1,10 @@
+from django.shortcuts import get_object_or_404
 from urllib.parse import urlencode
 
 from django import template
 
 from cart.cart import Cart
+from recipes.models import Tag
 
 register = template.Library()
 
@@ -55,3 +57,9 @@ def param_replace(context, **kwargs):
 def recipe_in_cart(context, id):
     cart = Cart(context['request'])
     return cart.in_cart(id)
+
+
+@register.simple_tag
+def get_tag_title(id):
+    tag = get_object_or_404(Tag, pk=id)
+    return tag.title
