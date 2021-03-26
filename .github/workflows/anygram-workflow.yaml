@@ -75,6 +75,7 @@ jobs:
           echo DB_PORT=${{ secrets.DB_PORT }} >> .env
           docker-compose down
           docker-compose up -d --force-recreate --build
+          sleep 5
           docker-compose exec web python manage.py migrate --noinput
           docker-compose exec web python manage.py collectstatic --no-input
 
