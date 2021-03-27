@@ -1,6 +1,6 @@
 {% load recipes_filter %}
 <div class="card" data-id="{{ recipe.pk }}">
-    <img src="{{ recipe.image.url }}" alt="Фото рецепта" class="card__image">
+    <img src="{{ recipe.image_url }}" alt="Фото рецепта" class="card__image">
     <div class="card__body">
         <a class="card__title link" href="{% url 'recipe' recipe.slug %}">{{ recipe.title }}</a>
         <ul class="card__items">
@@ -10,7 +10,10 @@
         </ul>
         <div class="card__items card__items_column">
             <p class="card__text"><span class="icon-time"></span>{{ recipe.duration }} мин.</p>
-            <p class="card__text"><span class="icon-user"></span><a href="{% url 'index_author' recipe.author.username %}" style="color: black">{{ recipe.author.first_name }}</a></p>
+            <p class="card__text">
+                <span class="icon-user"></span>
+                <a href="{% url 'index_author' recipe.author.username %}" style="color: black">{% if recipe.author.first_name %}{{ recipe.author.first_name }}{% else %}{{ recipe.author.username }}{% endif %}</a>
+            </p>
         </div>
     </div>
     <div class="card__footer">

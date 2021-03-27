@@ -92,6 +92,11 @@ class Recipe(models.Model):
     def get_absolute_url(self):
         return reverse('recipe', args=[str(self.slug)])
 
+    @property
+    def image_url(self):
+        if self.image and hasattr(self.image, 'url'):
+            return self.image.url
+
 
 class RecipeIngredient(models.Model):
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
