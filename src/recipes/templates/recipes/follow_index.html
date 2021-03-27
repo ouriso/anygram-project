@@ -20,7 +20,7 @@
                     {% for recipe in recipes %}
                     <li class="card-user__item">
                         <div class="recipe">
-                            <img src="{{ recipe.image.url }}" alt="Фото рецепта" class="recipe__image">
+                            <img src="{{ recipe.image_url }}" alt="Фото рецепта" class="recipe__image">
                             <h3 class="recipe__title">{{ recipe.title }}</h3>
                             <p class="recipe__text"><span class="icon-time"></span> {{ recipe.duration }} мин.</p>
                         </div>

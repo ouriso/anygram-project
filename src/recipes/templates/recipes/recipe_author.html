@@ -6,6 +6,7 @@
 {% block content %}
     {% csrf_token %}
     {% include 'includes/tags_table.html' with title=title tags=tags %}
+    {% if user.is_authenticated %}
     <div class="author-subscribe" data-author="{{ id }}">
         {% is_following user id as is_follow %}
         {% if is_follow %}
@@ -14,6 +15,7 @@
             <p style="padding: 0 0 2em 0;"><button class="button button_style_light-blue button_size_subscribe" name="subscribe" data-out>Подписаться на автора</button></p>
         {% endif %}
     </div>
+    {% endif %}
     <div class="card-list">
         {% for recipe in object_list %}
             {% include 'recipes/recipe_item.html' with recipe=recipe %}

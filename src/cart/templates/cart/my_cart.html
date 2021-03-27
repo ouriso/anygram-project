@@ -9,18 +9,18 @@
             <h1 class="main__title">{{ title }}</h1>
         </div>
         <div class="card-list card-list_column">
-            {% for recipe in object_list %}
             <ul class="shopping-list">
+            {% for recipe in object_list %}
                 <li class="shopping-list__item" data-id="{{ recipe.pk }}">
                     <div class="recipe recipe_reverse">
-                        <img src="{{ recipe.image.url }}" alt="фото рецепта" class="recipe__image recipe__image_big">
+                        <img src="{{ recipe.image_url }}" alt="фото рецепта" class="recipe__image recipe__image_big">
                         <h3 class="recipe__title">{{ recipe.title }}</h3>
                         <p class="recipe__text"><span class="icon-time"></span> {{ recipe.duration }}</p>
                     </div>
                     <a href="{% url 'delete_from_cart' recipe.pk %}" class="shopping-list__button link">Удалить</a>
                 </li>
-            </ul>
             {% endfor %}
+            </ul>
             {% if cart|length > 0 %}
                 <a href="{% url 'cart_download' %}"><button class="button button_style_blue">Скачать список</button></a>
             {% endif %}
