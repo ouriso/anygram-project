@@ -115,7 +115,7 @@ class RecipeUpdateView(LoginRequiredMixin, UpdateView):
         if self.object.author != request.user:
             return HttpResponseForbidden()
         form = RecipeCreateForm(instance=self.object)
-        ingredient_form = IngredientFormSet()
+        ingredient_form = IngredientFormSet(instance=self.object)
         return self.render_to_response(
             self.get_context_data(form=form,
                                   ingredient_form=ingredient_form,
@@ -124,8 +124,9 @@ class RecipeUpdateView(LoginRequiredMixin, UpdateView):
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
         form_class = self.get_form_class()
-        form = self.get_form(form_class)
-        ingredient_form = IngredientFormSet(self.request.POST)
+        # form = self.get_form(form_class)
+        form = RecipeCreateForm(self.request.POST, instance=self.object)
+        ingredient_form = IngredientFormSet(self.request.POST, instance=self.object)
         if (form.is_valid() and ingredient_form.is_valid()):
             return self.form_valid(form, ingredient_form)
         else:
