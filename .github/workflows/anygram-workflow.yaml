@@ -72,6 +72,9 @@ jobs:
           echo POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} >> .env
           echo DB_HOST=${{ secrets.DB_HOST }} >> .env
           echo DB_PORT=${{ secrets.DB_PORT }} >> .env
+          docker-compose down
+          docker pull ${{ secrets.DOCKER_USERNAME }}/anygram:latest
+          docker volume rm anygram_static_volume
           docker-compose up -d --force-recreate --build
           docker-compose exec -T web python3 manage.py collectstatic --no-input
           docker-compose exec -T web python3 manage.py migrate --noinput
