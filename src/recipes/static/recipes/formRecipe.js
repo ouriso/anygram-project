@@ -42,10 +42,10 @@ function Ingredients() {
             elem.classList.add('form__field-item-ingredient');
             elem.id = `ing_${cur}`;
             elem.innerHTML = `<span> ${data.name} ${data.value}${data.units}</span> <span class="form__field-item-delete"></span>
-                             <input id="nameIngredient_${cur}" name="recipeingredient_set-${cur-1}-title" type="hidden" value="${data.name}">
-                             <input id="valueIngredient_${cur}" name="recipeingredient_set-${cur-1}-amount" type="hidden" value="${data.value}">
-                             <input id="unitsIngredient_${cur}" name="recipeingredient_set-${cur-1}-dimension" type="hidden" value="${data.units}">
-                             <input id="idIngredient_${cur}" name="recipeingredient_set-${cur-1}-ingredient" type="hidden" value="${data.id}">`;
+                             <input id="id_recipeingredient_set-${cur}-title" name="recipeingredient_set-${cur}-title" type="hidden" value="${data.name}">
+                             <input id="id_recipeingredient_set-${cur}-amount" name="recipeingredient_set-${cur}-amount" type="hidden" value="${data.value}">
+                             <input id="id_recipeingredient_set-${cur}-dimension" name="recipeingredient_set-${cur}-dimension" type="hidden" value="${data.units}">
+                             <input id="id_recipeingredient_set-${cur}-ingredient" name="recipeingredient_set-${cur}-ingredient" type="hidden" value="${data.id}">`;
             cur++;
 
             ingredientsContainer.appendChild(elem);

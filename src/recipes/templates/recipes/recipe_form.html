@@ -57,14 +57,16 @@
                     {{ ingredient_form.management_form }}
                     {{ ingredient_form.non_form_errors }}
                     <div class="form__field-group-ingredientes-container">
+
                         {% for item in recipe.recipeingredient_set.all %}
-                        <div class="form__field-item-ingredient" id="ing_3">
+                        <div class="form__field-item-ingredient" id="ing_{{ forloop.counter0 }}">
                             <span> {{ item.ingredient.title }} {{ item.amount }} {{ item.ingredient.dimension }}</span>
                             <span class="form__field-item-delete"></span>
-                            <input id="nameIngredient_{{ forloop.counter0 }}" name="recipeingredient_set-{{ forloop.counter0 }}-title" type="hidden" value="{{ item.ingredient.title }}">
-                            <input id="valueIngredient_{{ forloop.counter0 }}" name="recipeingredient_set-{{ forloop.counter0 }}-amount" type="hidden" value="{{ item.amount }}">
-                            <input id="unitsIngredient_{{ forloop.counter0 }}" name="recipeingredient_set-{{ forloop.counter0 }}-dimension" type="hidden" value="{{ item.ingredient.dimension }}">
-                            <input id="idIngredient_{{ forloop.counter0 }}" name="recipeingredient_set-{{ forloop.counter0 }}-ingredient" type="hidden" value="{{ item.ingredient.pk }}">
+                            <input id="id_recipeingredient_set-{{ forloop.counter0 }}-title" name="recipeingredient_set-{{ forloop.counter0 }}-title" type="hidden" value="{{ item.ingredient.title }}">
+                            <input id="id_recipeingredient_set-{{ forloop.counter0 }}-amount" name="recipeingredient_set-{{ forloop.counter0 }}-amount" type="hidden" value="{{ item.amount }}">
+                            <input id="id_recipeingredient_set-{{ forloop.counter0 }}-dimension" name="recipeingredient_set-{{ forloop.counter0 }}-dimension" type="hidden" value="{{ item.ingredient.dimension }}">
+                            <input id="id_recipeingredient_set-{{ forloop.counter0 }}-ingredient" name="recipeingredient_set-{{ forloop.counter0 }}-ingredient" type="hidden" value="{{ item.ingredient.pk }}">
+                            <input id="id_recipeingredient_set-{{ forloop.counter0 }}-id" name="recipeingredient_set-{{ forloop.counter0 }}-id" type="hidden" value="{{ item.pk }}">
                         </div>
                         {% endfor %}
                         <div class="form__field-item-ingredient">
