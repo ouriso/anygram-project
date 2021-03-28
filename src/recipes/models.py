@@ -55,7 +55,7 @@ class Recipe(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE,
                                related_name='recipes',
                                verbose_name='автор рецепта')
-    title = models.CharField('название рецепта', max_length=100)
+    title = models.CharField('название рецепта', max_length=100, unique=True)
     slug = models.SlugField(unique=True)
     description = models.TextField('описание рецепта')
     duration = models.PositiveSmallIntegerField('время приготовления, мин')

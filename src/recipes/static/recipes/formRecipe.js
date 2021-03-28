@@ -41,7 +41,8 @@ function Ingredients() {
             const elem = document.createElement('div');
             elem.classList.add('form__field-item-ingredient');
             elem.id = `ing_${cur}`;
-            elem.innerHTML = `<span> ${data.name} ${data.value}${data.units}</span> <span class="form__field-item-delete"></span>
+            elem.innerHTML = `<span> ${data.name} ${data.value}${data.units}</span> <input type="checkbox" name="recipeingredient_set-{{ forloop.counter0 }}-DELETE" id="id_recipeingredient_set-{{ forloop.counter0 }}-DELETE" class="form__field-item-delete delete__checkbox">
+                             <label for="id_recipeingredient_set-{{ forloop.counter0 }}-DELETE"></label>
                              <input id="id_recipeingredient_set-${cur}-title" name="recipeingredient_set-${cur}-title" type="hidden" value="${data.name}">
                              <input id="id_recipeingredient_set-${cur}-amount" name="recipeingredient_set-${cur}-amount" type="hidden" value="${data.value}">
                              <input id="id_recipeingredient_set-${cur}-dimension" name="recipeingredient_set-${cur}-dimension" type="hidden" value="${data.units}">
@@ -56,11 +57,12 @@ function Ingredients() {
     const eventDelete = (e) => {
         if(e.target.classList.contains('form__field-item-delete')) {
             const item = e.target.closest('.form__field-item-ingredient');
-            item.removeEventListener('click',eventDelete);
-            item.remove()
+            item.removeEventListener('change',eventDelete);
+            // item.remove()
+            item.style.display = "none";
         };
     };
-    ingredientsContainer.addEventListener('click', eventDelete);
+    ingredientsContainer.addEventListener('change', eventDelete);
     // получение данных из инпутов для добавления
     const getValue = (e) => {
         const data = {

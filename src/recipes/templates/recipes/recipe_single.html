@@ -52,7 +52,7 @@
             </li>
             {% if user.is_authenticated %}
             <li class="single-card__item">
-                {% is_following user recipe.pk as is_follow %}
+                {% is_following user recipe.author.pk as is_follow %}
                 {% if is_follow %}
                     <button class="button button_style_light-blue button_size_subscribe active" name="subscribe">Отписаться от автора</button>
                 {% else %}

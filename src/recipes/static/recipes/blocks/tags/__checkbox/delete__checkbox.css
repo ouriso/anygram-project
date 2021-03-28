@@ -1,0 +1,13 @@
+.delete__checkbox {
+    display:none;
+}
+
+.delete__checkbox + label {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    margin-left: 20px;
+    background-size: contain;
+    background: url("../../../images/icons8-delete-16.png");
+    cursor: pointer;
+}
