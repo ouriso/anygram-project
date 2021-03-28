@@ -123,10 +123,12 @@ class RecipeUpdateView(LoginRequiredMixin, UpdateView):
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
-        form_class = self.get_form_class()
-        # form = self.get_form(form_class)
-        form = RecipeCreateForm(self.request.POST, instance=self.object)
-        ingredient_form = IngredientFormSet(self.request.POST, instance=self.object)
+        form = RecipeCreateForm(
+            self.request.POST, self.request.FILES, instance=self.object
+        )
+        ingredient_form = IngredientFormSet(
+            self.request.POST, instance=self.object
+        )
         if (form.is_valid() and ingredient_form.is_valid()):
             return self.form_valid(form, ingredient_form)
         else:
