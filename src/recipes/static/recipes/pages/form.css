@@ -52,6 +52,7 @@
 @import "../blocks/tags/__item/tags__item.css";
 @import "../blocks/tags/__label/tags__label.css";
 @import "../blocks/tags/__checkbox/tags__checkbox.css";
+@import "../blocks/tags/__checkbox/delete__checkbox.css";
 @import "../blocks/tags/__checkbox/_style/tags__checkbox_style_green.css";
 @import "../blocks/tags/__checkbox/_style/tags__checkbox_style_orange.css";
 @import "../blocks/tags/__checkbox/_style/tags__checkbox_style_purple.css";
