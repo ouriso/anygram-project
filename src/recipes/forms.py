@@ -1,7 +1,6 @@
 from django import forms
-from django.forms.models import BaseInlineFormSet
 
-from .models import Ingredient, Recipe, RecipeIngredient
+from .models import Recipe, RecipeIngredient
 
 
 class RecipeCreateForm(forms.ModelForm):
@@ -25,27 +24,6 @@ class RecipeIngredientForm(forms.ModelForm):
         fields = ('amount', 'title')
 
 
-class MyIngredientFormSet(BaseInlineFormSet):
-
-    def clean(self):
-        ingredients = self.instance.recipeingredient_set.all()
-        ing_from_form = []
-        for form in self.forms:
-            ingredient = form.cleaned_data.get('ingredient', None)
-            if ingredient is None or \
-                not Ingredient.objects.filter(title=ingredient).exists():
-                form.cleaned_data['DELETE'] = True
-                continue
-            ing_from_form.append(ingredient.pk)
-        if len(ing_from_form) != ingredients.count():
-            i = RecipeIngredient.objects.filter(recipe=self.instance).exclude(ingredient__in=ing_from_form).delete()
-
-
 IngredientFormSet = forms.inlineformset_factory(
-    Recipe, RecipeIngredient, fields=('ingredient', 'amount'),
-    formset=MyIngredientFormSet,
-    form = RecipeIngredientForm
+    Recipe, RecipeIngredient, fields=('ingredient', 'amount')
 )
-
-
-
